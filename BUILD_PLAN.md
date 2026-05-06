@@ -391,28 +391,3 @@ A single notebook that demonstrates the full pipeline on synthetic data, serving
 ### Handoff note
 At this point the repo is functional and demonstrably solves the synthetic problem. Real-data validation is up to you with your specific datasets.
 
----
-
-## Phase 7 (Optional, future work): Torus extension for joint cycles
-
-### Goal
-Extend the embedding from `R^2` (one circle) to `R^2 × R^2 = R^4` (a torus `T^2 = S^1 × S^1`) to jointly infer cell cycle and circadian phase.
-
-### Sketch (no tasks yet, just a design note)
-
-- Encoder maps to `R^4`. Two phase readouts: `θ_circadian = atan2(z[1], z[0])`, `θ_cycle = atan2(z[3], z[2])`.
-- Two predictors, two collapse regularizers (one per circle).
-- Two gene sets fed as concatenated input, or a richer encoder that takes the union and lets it sort out which genes drive which cycle.
-- Validation: for cell-cycle phase, can compare to Seurat's S-phase / G2M scores as a soft ground truth.
-
-This is a substantial extension. Defer until the single-cycle case is solid.
-
----
-
-## Notes for using this plan with Claude Code
-
-- **One phase per session**: paste only the relevant phase section into the Claude Code session. Mention the project name and that previous phases are complete.
-- **Reference the repo state**: at the start of phases 2–6, ask Claude Code to first run `find . -type f -name "*.py" | head -50` and read the existing structure before writing new code.
-- **Test as you go**: at the end of each phase, run the verification checklist before starting the next phase.
-- **Don't skip the synthetic data step**: phase 5's integration test (training on synthetic data and recovering true phase with > 0.7 circular correlation) is your single best signal that the architecture works. If this fails, debug before continuing.
-- **Keep it small**: resist the urge to add features (multiple datasets, fancy architectures, hyperparameter sweeps) before the basic pipeline works. The whole repo should fit in a few thousand lines.

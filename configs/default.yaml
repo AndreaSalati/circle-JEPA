@@ -1,0 +1,15 @@
+n_genes: 15
+hidden_dims: [64, 32]
+embedding_dim: 2
+lr: 0.001
+weight_decay: 0.0001
+n_epochs: 50
+batch_size: 128
+lambda_collapse: 1.0
+lambda_amplitude: 0.1
+ema_momentum: 0.996
+view_strategy: downsample
+view_mode: asymmetric
+mask_prob: 0.0
+seed: 0
+device: cpu
