@@ -1,0 +1,43 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "circadian-jepa"
+version = "0.1.0"
+description = "JEPA-style unsupervised circadian phase inference from scRNA-seq data"
+requires-python = ">=3.9"
+dependencies = [
+    "torch>=2.0",
+    "numpy",
+    "scipy",
+    "scanpy",
+    "anndata",
+    "pandas",
+    "scikit-learn",
+    "tqdm",
+    "pyyaml",
+    # scritmo must be installed separately (not on PyPI); expected in the ML-gpu conda env
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "pytest-cov",
+    "ruff",
+    "mypy",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/circadian_jepa"]
+artifacts = ["src/circadian_jepa/data/resources/*.csv"]
+
+[tool.ruff]
+line-length = 100
+src = ["src"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

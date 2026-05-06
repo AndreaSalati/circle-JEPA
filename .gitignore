@@ -1,0 +1,49 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+*.so
+*.dylib
+.venv/
+venv/
+env/
+
+# PyTorch checkpoints
+*.pt
+*.pth
+*.ckpt
+
+# Jupyter / Marimo
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+__marimo__/
+
+# Data formats
+*.h5ad
+*.loom
+*.h5
+*.hdf5
+
+# Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Test / coverage artifacts
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+
+# Configs with secrets
+*.env
