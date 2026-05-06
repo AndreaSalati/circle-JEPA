@@ -31,7 +31,7 @@ def _():
     import seaborn as sns
     from pathlib import Path
 
-    _JSON_PATH = Path(__file__).parent.parent / "phase5_results.json"
+    _JSON_PATH = Path(__file__).parent.parent / "results" / "phase5_results.json"
     with open(_JSON_PATH) as _f:
         results = json.load(_f)
 
@@ -213,7 +213,7 @@ def _(mo):
 @app.cell
 def _(mo):
     mo.md("""
-    ## KDE of predicted phases per true timepoint
+    ## phase histos
     """)
     return
 
@@ -308,14 +308,6 @@ def _(np, plt, results, shorten_vm):
     fig_loss.suptitle("JEPA training curves", fontsize=12)
     plt.tight_layout()
     fig_loss
-    return
-
-
-@app.cell
-def _():
-    import scritmo as sr
-
-    sr.plot_phase_polar_population()
     return
 
 

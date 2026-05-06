@@ -1,4 +1,5 @@
 import math, json, sys
+from pathlib import Path
 import numpy as np
 import torch
 from torch.utils.data import DataLoader
@@ -207,8 +208,8 @@ if __name__ == "__main__":
             f" {v['mae_hours']:>8.2f} {pred:>7s}"
         )
 
-    with open(
-        "/Users/salati/Documents/CODE/github/c-JEPA/phase5_results.json", "w"
-    ) as f:
+    _out = Path(__file__).parent.parent / "results" / "phase5_results.json"
+    _out.parent.mkdir(exist_ok=True)
+    with open(_out, "w") as f:
         json.dump(all_results, f, indent=2)
-    print("\nResults saved to phase5_results.json")
+    print(f"\nResults saved to {_out}")
