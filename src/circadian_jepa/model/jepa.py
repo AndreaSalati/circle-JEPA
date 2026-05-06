@@ -40,6 +40,11 @@ class CircadianJEPA(nn.Module):
         z_a_pred = self.predictor(z_a, delta)
         return {"z_a": z_a, "z_b_target": z_b_target, "z_a_pred": z_a_pred}
 
+    def to(self, *args, **kwargs):
+        super().to(*args, **kwargs)
+        self.ema.teacher = self.ema.teacher.to(*args, **kwargs)
+        return self
+
     def step_ema(self) -> None:
         self.ema.update(self.student_encoder)
 

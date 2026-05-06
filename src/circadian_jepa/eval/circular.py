@@ -25,6 +25,11 @@ def circular_correlation(theta_pred: np.ndarray, theta_true: np.ndarray) -> floa
     return float(num / den)
 
 
+# median L1 distance
+def mae(theta_pred: np.ndarray, theta_true: np.ndarray) -> float:
+    return float(np.median(np.abs(theta_pred - theta_true)))
+
+
 def circular_distance(theta_a: np.ndarray, theta_b: np.ndarray) -> np.ndarray:
     """Wrapped angular distance: min(|a-b|, 2π - |a-b|)."""
     theta_a = np.asarray(theta_a, dtype=float)

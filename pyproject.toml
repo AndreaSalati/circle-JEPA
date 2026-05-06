@@ -41,3 +41,6 @@ select = ["E", "F", "I", "B", "UP"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+markers = [
+    "slow: marks tests as slow (e.g. full training pipeline on synthetic data)",
+]

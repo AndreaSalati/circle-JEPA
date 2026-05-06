@@ -75,7 +75,7 @@ def test_counts_layer_matches_x():
 
 def test_view_generator_shape():
     counts = torch.randint(0, 50, (32, 15), dtype=torch.float32)
-    vg = ViewGenerator(downsample=True, seed=0)
+    vg = ViewGenerator(view_mode="symmetric_split", seed=0)
     view_a, view_b = vg.make_pair(counts)
     assert view_a.shape == counts.shape
     assert view_b.shape == counts.shape
@@ -83,7 +83,7 @@ def test_view_generator_shape():
 
 def test_view_generator_downsample_differs():
     counts = torch.randint(5, 100, (64, 15), dtype=torch.float32)
-    vg = ViewGenerator(downsample=True, seed=0)
+    vg = ViewGenerator(view_mode="symmetric_split", seed=0)
     view_a, view_b = vg.make_pair(counts)
     assert not torch.allclose(view_a, view_b), "Downsampled views should differ"
     # Total counts in each view should be roughly half the original
@@ -97,7 +97,7 @@ def test_same_batch_pairing():
     counts = torch.randint(5, 50, (60, 15), dtype=torch.float32)
     # 3 batches of 20 cells each
     batch_labels = torch.tensor([i // 20 for i in range(60)], dtype=torch.long)
-    vg = ViewGenerator(downsample=True, same_batch=True, seed=42)
+    vg = ViewGenerator(view_mode="symmetric_split", same_batch=True, seed=42)
     view_a, view_b = vg.make_batch_pairs(counts, batch_labels)
     assert view_a.shape == (60, 15)
     assert view_b.shape == (60, 15)
@@ -110,7 +110,7 @@ def test_same_batch_pairing():
 
 def test_dataset_getitem():
     adata = make_synthetic_circadian(100, n_timepoints=4, seed=0)
-    vg = ViewGenerator(downsample=True, seed=0)
+    vg = ViewGenerator(view_mode="symmetric_split", seed=0)
     ds = CircadianDataset(adata, vg)
     assert len(ds) == 100
     item = ds[0]
@@ -123,7 +123,7 @@ def test_dataset_getitem():
 
 def test_dataset_same_batch():
     adata = make_synthetic_circadian(120, n_timepoints=6, seed=0)
-    vg = ViewGenerator(downsample=True, same_batch=True, seed=0)
+    vg = ViewGenerator(view_mode="symmetric_split", same_batch=True, seed=0)
     ds = CircadianDataset(adata, vg)
     item = ds[0]
     assert "view_a" in item and "view_b" in item

@@ -47,3 +47,5 @@ htmlcov/
 
 # Configs with secrets
 *.env
+*.json
+*.log
