@@ -14,6 +14,7 @@ from circadian_jepa.training.config import TrainConfig
 from circadian_jepa.training.losses import (
     amplitude_regularizer,
     collapse_regularizer,
+    harmonic_collapse_regularizer,
     predictive_loss,
     total_loss,
 )
@@ -33,8 +34,8 @@ def test_predictive_loss_scalar_nonneg():
     assert loss.item() >= 0.0
 
 
-def test_collapse_regularizer_scalar_nonneg():
-    loss = collapse_regularizer(_rand_z())
+def test_harmonic_collapse_regularizer_scalar_nonneg():
+    loss = harmonic_collapse_regularizer(_rand_z())
     assert loss.ndim == 0
     assert loss.item() >= 0.0
 
@@ -45,19 +46,29 @@ def test_amplitude_regularizer_scalar_nonneg():
     assert loss.item() >= 0.0
 
 
-def test_collapse_regularizer_uniform():
-    # Perfectly uniform phases → R_bar ≈ 0 → loss ≈ 0
+def test_harmonic_collapse_regularizer_uniform():
+    # Perfectly uniform phases → all R̄_k ≈ 0 → loss ≈ 0
     n = 1000
     theta = torch.linspace(0.0, 2.0 * math.pi * (1.0 - 1.0 / n), n)
     z = torch.stack([theta.cos(), theta.sin()], dim=-1)
-    assert collapse_regularizer(z).item() < 0.01
+    assert harmonic_collapse_regularizer(z, n_harmonics=2).item() < 0.01
 
 
-def test_collapse_regularizer_collapsed():
-    # All pointing in the same direction → R_bar = 1 → loss = 1
+def test_harmonic_collapse_regularizer_unimodal():
+    # All pointing in the same direction → R̄₁ = R̄₂ = 1 → loss = 1
     z = torch.ones(64, 2)
-    loss = collapse_regularizer(z).item()
-    assert loss > 0.9
+    assert harmonic_collapse_regularizer(z, n_harmonics=2).item() > 0.9
+
+
+def test_harmonic_collapse_antipodal():
+    # Two equal clusters at opposite poles: R̄₁ ≈ 0 (cancels) but R̄₂ ≈ 1.
+    # n_harmonics=1 should miss it; n_harmonics=2 should catch it.
+    n = 128
+    half = n // 2
+    theta = torch.cat([torch.zeros(half), torch.full((half,), math.pi)])
+    z = torch.stack([theta.cos(), theta.sin()], dim=-1)
+    assert harmonic_collapse_regularizer(z, n_harmonics=1).item() < 0.01
+    assert harmonic_collapse_regularizer(z, n_harmonics=2).item() > 0.45  # mean of (≈0 + ≈1)/2
 
 
 def test_total_loss_keys_and_scalar():
@@ -67,6 +78,17 @@ def test_total_loss_keys_and_scalar():
         "z_a_pred": _rand_z(),
     }
     loss, components = total_loss(out)
+    assert loss.ndim == 0
+    assert set(components.keys()) == {"predict", "collapse", "amplitude", "total"}
+
+
+def test_total_loss_n_harmonics():
+    out = {
+        "z_a": _rand_z(),
+        "z_b_target": _rand_z(),
+        "z_a_pred": _rand_z(),
+    }
+    loss, components = total_loss(out, n_harmonics=2)
     assert loss.ndim == 0
     assert set(components.keys()) == {"predict", "collapse", "amplitude", "total"}
 

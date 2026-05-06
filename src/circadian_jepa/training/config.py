@@ -16,6 +16,7 @@ class TrainConfig:
     batch_size: int = 128
     lambda_collapse: float = 1.0
     lambda_amplitude: float = 0.1
+    n_harmonics: int = 2
     ema_momentum: float = 0.996
     view_strategy: str = "downsample"
     view_mode: str = "asymmetric"

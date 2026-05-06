@@ -57,6 +57,7 @@ def train_from_config(config: TrainConfig, adata: anndata.AnnData) -> CircadianJ
         n_epochs=config.n_epochs,
         lambda_collapse=config.lambda_collapse,
         lambda_amplitude=config.lambda_amplitude,
+        n_harmonics=config.n_harmonics,
     )
     return model
 

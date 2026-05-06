@@ -30,6 +30,7 @@ class Trainer:
         view_generator=None,
         lambda_collapse: float = 1.0,
         lambda_amplitude: float = 0.1,
+        n_harmonics: int = 2,
     ) -> dict:
         """Run one training epoch. Views are taken directly from the dataloader batch."""
         self.model.train()
@@ -41,7 +42,7 @@ class Trainer:
             view_b = batch["view_b"].to(self.device)
 
             out = self.model(view_a, view_b)
-            loss, components = total_loss(out, lambda_collapse, lambda_amplitude)
+            loss, components = total_loss(out, lambda_collapse, lambda_amplitude, n_harmonics)
 
             self.optimizer.zero_grad()
             loss.backward()
@@ -68,6 +69,7 @@ class Trainer:
         view_generator=None,
         lambda_collapse: float = 1.0,
         lambda_amplitude: float = 0.1,
+        n_harmonics: int = 2,
         callback: Callable[[int, dict], None] | None = None,
     ) -> list[dict]:
         """Train for n_epochs, returning per-epoch metric history."""
@@ -75,7 +77,7 @@ class Trainer:
 
         for epoch in range(1, n_epochs + 1):
             metrics = self.train_epoch(
-                train_dataloader, view_generator, lambda_collapse, lambda_amplitude
+                train_dataloader, view_generator, lambda_collapse, lambda_amplitude, n_harmonics
             )
             if self.scheduler is not None:
                 self.scheduler.step()
