@@ -4,7 +4,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Environment
 
-Use the `torch` conda environment (if present, otherwise `ML-gpu`). Use PyTorch for all ML implementations.
+Detect the correct conda environment with:
+```bash
+conda env list | grep -wE "^torch|^ML-gpu" | head -1 | awk '{print $1}'
+```
+Use that env for all Python/pytest/pip commands, e.g. `conda run -n torch python ...`.
+The priority order is: `torch` first (maxine machine), `ML-gpu` second (salati machine).
+Use PyTorch for all ML implementations.
 
 ## Commands
 
