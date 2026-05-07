@@ -24,10 +24,9 @@ from circadian_jepa.eval.inference import infer_phase
 import scritmo
 import scritmo.ml as cr
 from circadian_jepa.data.gene_lists import get_default_beta_path
+from circadian_jepa.paths import get_data_root
 
-DATA_PATH = Path(
-    "/Users/salati/Documents/CODE/github/scCircadianMeta/data/SKIN/concatenated.h5ad"
-)
+DATA_PATH = get_data_root() / "SKIN/concatenated.h5ad"
 N_CELLS = 4_000
 SEED = 42
 

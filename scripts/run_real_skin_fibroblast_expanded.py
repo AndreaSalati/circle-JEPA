@@ -26,13 +26,11 @@ from circadian_jepa.eval.circular import circular_correlation, align_phase, mae
 from circadian_jepa.eval.inference import infer_phase
 import scritmo
 import scritmo.ml as cr
+from circadian_jepa.paths import get_data_root
 
-DATA_PATH = Path(
-    "/Users/salati/Documents/CODE/github/scCircadianMeta/data/SKIN/concatenated.h5ad"
-)
-PARAMS_DIR = Path(
-    "/Users/salati/Documents/CODE/github/scCircadianMeta/data/params_g"
-)
+_DATA_ROOT = get_data_root()
+DATA_PATH = _DATA_ROOT / "SKIN/concatenated.h5ad"
+PARAMS_DIR = _DATA_ROOT / "params_g"
 SKIN_FIB_CSV = PARAMS_DIR / "SKIN_Fibroblast.csv"
 GENE_SET_JSON = PARAMS_DIR / "gene_set_BIG_withImmune.json"
 
