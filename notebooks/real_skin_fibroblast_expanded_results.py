@@ -14,10 +14,10 @@ def _():
 @app.cell
 def _(mo):
     mo.md(r"""
-    # Real Data Results — JEPA vs scritmo baseline (Skin Fibroblasts)
+    # Real Data Results — JEPA vs scritmo baseline (Skin Fibroblasts, expanded gene set)
 
     Comparison of circadian phase inference on **real scRNA-seq data**.
-    **4 000 cells · 15 clock genes · 6 discrete timepoints (ZT2, ZT6, ZT10, ZT14, ZT18, ZT22) · skin fibroblasts.**
+    **4 000 cells · 118 rhythmic genes (cell-type-specific) · 6 discrete timepoints (ZT2, ZT6, ZT10, ZT14, ZT18, ZT22) · skin fibroblasts.**
     JEPA trained with `symmetric_split` view mode only (best on synthetic benchmarks).
     """)
     return
@@ -32,7 +32,7 @@ def _():
     import seaborn as sns
     from pathlib import Path
 
-    _JSON_PATH = Path(__file__).parent.parent / "results" / "real_skin_fibroblast_results.json"
+    _JSON_PATH = Path(__file__).parent.parent / "results" / "real_skin_fibroblast_expanded_results.json"
     with open(_JSON_PATH) as _f:
         results = json.load(_f)
 
@@ -139,14 +139,15 @@ def _(df_errors, order_map, plt, sns):
         palette=_pal,
         width=0.55,
         legend=False,
-        flierprops=dict(marker=".", markersize=2, alpha=0.25),
+        # flierprops=dict(marker=".", markersize=2, alpha=0.25),
         ax=_ax,
+        showfliers=False,
     )
-    _ax.axhline(12, color="gray", linestyle=":", linewidth=0.9, label="max possible (12 h)")
+    # _ax.axhline(12, color="gray", linestyle=":", linewidth=0.9, label="max possible (12 h)")
     _ax.set_xlabel("")
     _ax.set_ylabel("Absolute phase error (hours)", fontsize=10)
     _ax.set_title(
-        "Per-cell phase error — JEPA (sym_split) vs scritmo baseline\nSkin fibroblasts · real data",
+        "Per-cell phase error — JEPA (sym_split) vs scritmo baseline\nSkin fibroblasts · expanded gene set (118 genes)",
         fontsize=11,
     )
     _ax.legend(fontsize=8)
@@ -270,7 +271,7 @@ def _(TWO_PI, align_phase_local, np, plt, results, shorten_vm):
         _ax.set_visible(False)
 
     fig_polar.suptitle(
-        "Polar histograms of predicted phases per true timepoint — skin fibroblasts",
+        "Polar histograms of predicted phases per true timepoint — skin fibroblasts (expanded gene set)",
         fontsize=12, y=1.02,
     )
     plt.tight_layout()
@@ -288,21 +289,24 @@ def _(df_errors, np, results):
 
 @app.cell
 def _(df_errors, plt, sns):
-    # show boxplots of errors for each time point separately!
-
     fig_time, _ax = plt.subplots(figsize=(10, 5))
     sns.boxplot(
         data=df_errors,
         x="true_time",
         y="error_h",
         hue="experiment",
-        # hue_order=order_map,
-        # palette=_pal,
         width=0.6,
         ax=_ax,
         showfliers=False,
     )
-
+    _ax.set_xlabel("True ZT (hours)", fontsize=10)
+    _ax.set_ylabel("Absolute phase error (hours)", fontsize=10)
+    _ax.set_title(
+        "Per-cell error by timepoint — expanded gene set (118 genes)",
+        fontsize=11,
+    )
+    sns.despine(ax=_ax)
+    plt.tight_layout()
     fig_time
     return
 
@@ -336,7 +340,7 @@ def _(np, plt, results, shorten_vm):
 
     _handles, _labels = _axes[0].get_legend_handles_labels()
     fig_loss.legend(_handles, _labels, loc="upper right", fontsize=7.5, ncol=1, frameon=False)
-    fig_loss.suptitle("JEPA training curves — skin fibroblasts (real data)", fontsize=12)
+    fig_loss.suptitle("JEPA training curves — skin fibroblasts · expanded gene set", fontsize=12)
     plt.tight_layout()
     fig_loss
     return
